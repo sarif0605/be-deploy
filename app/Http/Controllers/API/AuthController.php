@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\UserloginRequest;
+use App\Http\Requests\Auth\UserLoginRequest;
 use App\Http\Requests\Auth\UserRegisterRequest;
 use App\Http\Requests\Auth\UserUpdateRequest;
 use App\Http\Resources\Auth\UserResource;
@@ -18,7 +18,7 @@ use Laravel\Socialite\Facades\Socialite;
 class AuthController extends Controller
 {
 
-    public function login(UserloginRequest $request)
+    public function login(UserLoginRequest $request)
     {
         $data = $request->validated();
         $credentials = ['email' => $data['email'], 'password' => $data['password']];
