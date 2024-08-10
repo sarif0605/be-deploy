@@ -13,6 +13,7 @@ use App\Models\Borrows;
 use App\Models\User;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Dompdf\Dompdf;
+use Illuminate\Support\Str;
 use Dompdf\Options;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
@@ -96,15 +97,16 @@ class BookController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(BookCreateRequest $request) : JsonResponse
+    public function store(BookCreateRequest $request): JsonResponse
     {
         try {
             $data = $request->validated();
-            $cloudinaryImage = $request->file('image')->storeOnCloudinary('movies');
+            $cloudinaryImage = $request->file('image')->storeOnCloudinary('books');
             $url = $cloudinaryImage->getSecurePath();
             $public_id = $cloudinaryImage->getPublicId();
             $data['image'] = $url;
             $data['public_image_id'] = $public_id;
+            $data['id'] = Str::uuid();
             $book = Books::create($data);
             return (new BookResource($book))->response()->setStatusCode(201);
         } catch (\Exception $e) {
@@ -113,7 +115,7 @@ class BookController extends Controller
                 'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
             ], 500);
         }
-    }    
+    }
 
     public function bookZero()
     {

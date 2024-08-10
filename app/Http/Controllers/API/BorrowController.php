@@ -13,6 +13,7 @@ use Dompdf\Options;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class BorrowController extends Controller
 {
@@ -34,11 +35,9 @@ class BorrowController extends Controller
                 'message' => $validator->errors()->first('load_date'),
             ], 400);
         }
-
         $data = $request->validated();
         $currentUser = auth()->user();
         $book = Books::find($data['book_id']);
-
         if (!$book || $book->stock <= 0) {
             return response()->json([
                 'message' => 'Book not available or out of stock.'
@@ -47,6 +46,7 @@ class BorrowController extends Controller
         $borrow = Borrows::updateOrCreate(
             ['user_id' => $currentUser->id, 'book_id' => $data['book_id']],
             [
+                'id' => Str::uuid(),
                 'load_date' => $data['load_date'],
                 'borrow_date' => $data['borrow_date'],
                 'user_id' => $currentUser->id,
@@ -54,7 +54,6 @@ class BorrowController extends Controller
         );
         $book->stock -= 1;
         $book->save();
-
         return (new BorrowResource($borrow))->response()->setStatusCode(201);
     }
 

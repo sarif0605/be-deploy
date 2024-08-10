@@ -11,6 +11,7 @@ use App\Http\Resources\Category\CategoryResourceById;
 use App\Models\Categories;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
@@ -39,12 +40,13 @@ class CategoryController extends Controller
 
     public function store(CategoryCreateRequest $request)
     {
-        $validateCategory = $request->validated();
-        $category = new Categories($validateCategory);
+        $validatedData = $request->validated();
+        $category = new Categories();
+        $category->id = Str::uuid();
+        $category->name = $validatedData['name'];
         $category->save();
         return (new CategoryResource($category))->response()->setStatusCode(201);
     }
-
     /**
      * Display the specified resource.
      */
