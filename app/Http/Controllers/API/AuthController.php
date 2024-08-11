@@ -48,11 +48,21 @@ class AuthController extends Controller
             'password' => Hash::make($data['password']),
             'role_id' => $roleUser->id,
         ]);
+        $userData = [
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'role_id' => $user->role_id,
+            'role' => [
+                'name' => $roleUser->name,
+            ],
+        ];
+        // $userJson = urlencode(json_encode($userData));
         $token = JWTAuth::fromUser($user);
         return response()->json([
             'message' => 'Registrasi berhasil',
             'token' => $token,
-            'user' => new UserResource($user),
+            'user' => $userData,
         ], 201);
     }
 
@@ -107,8 +117,6 @@ class AuthController extends Controller
         );
 
         $token = JWTAuth::fromUser($user);
-
-        // Manually construct user data array
         $userData = [
             'id' => $user->id,
             'name' => $user->name,
@@ -121,7 +129,6 @@ class AuthController extends Controller
         $userJson = urlencode(json_encode($userData));
         return redirect()->away('https://fe-deploy-xi.vercel.app/callback?token=' . urlencode($token) . '&user=' . $userJson);
     } catch (\Exception $e) {
-        // Handle exceptions or errors
         return response()->json(['error' => $e->getMessage()], 500);
     }
 }
