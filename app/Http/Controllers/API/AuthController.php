@@ -127,7 +127,7 @@ class AuthController extends Controller
             ],
         ];
         $userJson = urlencode(json_encode($userData));
-        return redirect()->away('https://fe-deploy-xi.vercel.app/callback?token=' . urlencode($token) . '&user=' . $userJson);
+        return redirect()->away('https://fe-deploy-hwyc7umxb-arifs-projects-3ec7e1b2.vercel.app/callback?token=' . urlencode($token) . '&user=' . $userJson);
     } catch (\Exception $e) {
         return response()->json(['error' => $e->getMessage()], 500);
     }
